@@ -39,14 +39,23 @@ render_icon 128
 rm -rf "$PACKAGE_DIR"
 mkdir -p "$PACKAGE_DIR"
 
-cp "$ROOT_DIR/manifest.json" "$PACKAGE_DIR/"
 cp "$ROOT_DIR/content.js" "$PACKAGE_DIR/"
 cp -R "$ROOT_DIR/icons" "$PACKAGE_DIR/"
 
 rm -f "$DIST_DIR/$CHROME_ARCHIVE" "$DIST_DIR/$FIREFOX_ARCHIVE"
 (
   cd "$PACKAGE_DIR"
+
+  # Chrome build: strip browser_specific_settings
+  node -e "
+    const m = require('$MANIFEST_PATH');
+    delete m.browser_specific_settings;
+    process.stdout.write(JSON.stringify(m, null, 2));
+  " > manifest.json
   zip -rq "../$CHROME_ARCHIVE" manifest.json content.js icons
+
+  # Firefox build: restore original manifest
+  cp "$MANIFEST_PATH" manifest.json
   zip -rq "../$FIREFOX_ARCHIVE" manifest.json content.js icons
 )
 
