@@ -8,7 +8,8 @@
 
     const withoutScheme = rawHref.slice(7);
     const queryIndex = withoutScheme.indexOf("?");
-    const addressPart = queryIndex >= 0 ? withoutScheme.slice(0, queryIndex) : withoutScheme;
+    const addressPart =
+      queryIndex >= 0 ? withoutScheme.slice(0, queryIndex) : withoutScheme;
     const decoded = decodeURIComponent(addressPart).trim();
     return decoded || null;
   }
@@ -101,7 +102,7 @@
       return null;
     }
 
-    return target.closest('a[href^="mailto:"], a[href^="MAILTO:"]');
+    return target.closest('a[href^="mailto:" i]');
   }
 
   function onPointerActivation(event) {
